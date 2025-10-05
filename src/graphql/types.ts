@@ -1,36 +1,12 @@
-import { gql } from "apollo-server";
+import { GraphQLObjectType, GraphQLString, GraphQLID, GraphQLNonNull } from 'graphql';
 
-export const typeDefs = gql`
-  type Log {
-    id: ID!
-    service: Service!
-    level: LogLevel!
-    message: String!
-    timestamp: String!
-  }
-
-  enum LogLevel {
-    INFO
-    WARN
-    ERROR
-    DEBUG
-  }
-
-  type Service {
-    id: ID!
-    name: String!
-    description: String
-  }
-
-  type User {
-    id: ID!
-    username: String!
-    email: String!
-    role: Role!
-  }
-
-  enum Role {
-    ADMIN
-    VIEWER
-  }
-`;
+export const LogType = new GraphQLObjectType({
+  name: 'Log',
+  fields: {
+    id: { type: GraphQLID },
+    message: { type: new GraphQLNonNull(GraphQLString) },
+    level: { type: GraphQLString },
+    service: { type: GraphQLString },
+    timestamp: { type: GraphQLString },
+  },
+});

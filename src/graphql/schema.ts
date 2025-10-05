@@ -1,10 +1,24 @@
-import { gql } from "apollo-server";
-import { typeDefs as coreTypes } from "./types.ts";
-import { queryTypeDefs } from "./queries.ts";
-import { mutationTypeDefs } from "./mutations.ts";
+import { GraphQLSchema, GraphQLObjectType, GraphQLString } from 'graphql';
+import { addLog } from './mutations.js';
 
-export const typeDefs = gql`
-  ${coreTypes}
-  ${queryTypeDefs}
-  ${mutationTypeDefs}
-`;
+const Query = new GraphQLObjectType({
+  name: "Query",
+  fields: {
+    health: {
+      type: GraphQLString,
+      resolve: () => "LogLens API is running 🚀",
+    },
+  },
+});
+
+const Mutation = new GraphQLObjectType({
+  name: 'Mutation',
+  fields: {
+    addLog,
+  },
+});
+
+export const schema = new GraphQLSchema({
+    query: Query,
+    mutation: Mutation,
+});
