@@ -10,3 +10,12 @@ export const LogType = new GraphQLObjectType({
     timestamp: { type: GraphQLString },
   },
 });
+
+export const UserType = new GraphQLObjectType({
+  name: "User",
+  fields: {
+    id: { type: GraphQLID },
+    username: { type: GraphQLString },
+    token: { type: GraphQLString },
+  },
+});
