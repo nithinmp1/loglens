@@ -1,28 +1,24 @@
-import { gql } from "apollo-server";
+import { GraphQLString, GraphQLNonNull } from 'graphql';
+import { LogType } from './types.js';
 
-export const mutationTypeDefs = gql`
-  input AddLogInput {
-    service: String!
-    level: LogLevel!
-    message: String!
-  }
+export const addLog = {
+  type: LogType,
+  args: {
+    message: { type: new GraphQLNonNull(GraphQLString) },
+    level: { type: GraphQLString },
+    service: { type: GraphQLString },
+  },
+  async resolve(_: any, args: { message: string; level?: string; service?: string }) {
+    const log = {
+      id: Date.now().toString(),
+      message: args.message,
+      level: args.level || 'INFO',
+      service: args.service || 'default',
+      timestamp: new Date().toISOString(),
+    };
 
-  input CreateServiceInput {
-    name: String!
-    description: String
-  }
+    console.log('New log added:', log);
 
-  input CreateUserInput {
-    username: String!
-    email: String!
-    role: Role!
-  }
-
-  type Mutation {
-    addLog(input: AddLogInput!): Log!
-
-    createService(input: CreateServiceInput!): Service!
-
-    createUser(input: CreateUserInput!): User!
-  }
-`;
+    return log;
+  },
+};
