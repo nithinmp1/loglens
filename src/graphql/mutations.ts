@@ -1,6 +1,9 @@
 import { GraphQLString, GraphQLNonNull } from 'graphql';
 import { LogType } from './types.js';
 
+const logs: any[] = globalThis.logs || [];
+globalThis.logs = logs;
+
 export const addLog = {
   type: LogType,
   args: {
@@ -16,8 +19,7 @@ export const addLog = {
       service: args.service || 'default',
       timestamp: new Date().toISOString(),
     };
-
-    console.log('New log added:', log);
+    logs.push(log);
 
     return log;
   },

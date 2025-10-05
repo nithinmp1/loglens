@@ -1,5 +1,6 @@
 import { GraphQLSchema, GraphQLObjectType, GraphQLString } from 'graphql';
 import { addLog } from './mutations.js';
+import { logsQuery } from "./queries.js";
 
 const Query = new GraphQLObjectType({
   name: "Query",
@@ -8,6 +9,7 @@ const Query = new GraphQLObjectType({
       type: GraphQLString,
       resolve: () => "LogLens API is running 🚀",
     },
+    logs: logsQuery,
   },
 });
 
