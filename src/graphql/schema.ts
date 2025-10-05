@@ -1,6 +1,6 @@
 import { GraphQLSchema, GraphQLObjectType, GraphQLString } from 'graphql';
-import { addLog, register, login } from './mutations.js';
-import { logsQuery } from "./queries.js";
+import { addLog, register, login } from './mutations.ts';
+import { logsQuery } from "./queries.ts";
 
 const Query = new GraphQLObjectType({
   name: "Query",

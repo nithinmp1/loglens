@@ -1,5 +1,5 @@
 import { GraphQLString, GraphQLNonNull } from 'graphql';
-import { LogType, UserType } from './types.js';
+import { LogType, UserType } from './types.ts';
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 

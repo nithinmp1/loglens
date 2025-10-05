@@ -3,7 +3,7 @@ import {
   GraphQLString,
   GraphQLObjectType,
 } from "graphql";
-import { LogType } from "./types.js";
+import { LogType } from "./types.ts";
 
 declare global {
   var logs: any[] | undefined;
