@@ -4,7 +4,9 @@ import {
   GraphQLObjectType,
 } from "graphql";
 import { LogType } from "./types.ts";
+import { PrismaClient } from "@prisma/client";
 
+const prisma = new PrismaClient();
 declare global {
   var logs: any[] | undefined;
 }
@@ -20,26 +22,41 @@ export const logsQuery = {
     from: { type: GraphQLString },
     to: { type: GraphQLString },
   },
-  resolve: (_: any, args: any) => {
-    let filteredLogs = logs;
+  async resolve(_: any, args: any, context: any) {
+    if (!context.user) {
+      throw new Error("Unauthorized");
+    }
+    
+    const filters: any = {};
 
+    // Apply service filter
     if (args.service) {
-      filteredLogs = filteredLogs.filter((log) => log.service === args.service);
+      filters.service = args.service;
     }
 
+    // Apply level filter
     if (args.level) {
-      filteredLogs = filteredLogs.filter((log) => log.level === args.level);
+      filters.level = args.level;
     }
 
+    // Apply timestamp range filter
     if (args.from && args.to) {
-      const fromDate = new Date(args.from);
-      const toDate = new Date(args.to);
-      filteredLogs = filteredLogs.filter((log) => {
-        const ts = new Date(log.timestamp);
-        return ts >= fromDate && ts <= toDate;
-      });
+      filters.timestamp = {
+        gte: new Date(args.from),
+        lte: new Date(args.to),
+      };
+    } else if (args.from) {
+      filters.timestamp = { gte: new Date(args.from) };
+    } else if (args.to) {
+      filters.timestamp = { lte: new Date(args.to) };
     }
 
-    return filteredLogs;
+    // Query database using Prisma
+    const logs = await prisma.log.findMany({
+      where: filters,
+      orderBy: { timestamp: "desc" },
+    });
+
+    return logs;
   },
 };
