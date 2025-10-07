@@ -2,7 +2,9 @@ import { GraphQLString, GraphQLNonNull } from 'graphql';
 import { LogType, UserType } from './types.ts';
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { PrismaClient } from "@prisma/client";
 
+const prisma = new PrismaClient();
 const users: any[] = [];
 const logs: any[] = globalThis.logs || [];
 globalThis.logs = logs;
@@ -62,15 +64,14 @@ export const addLog = {
       throw new Error("Unauthorized");
     }
     
-    const log = {
-      id: Date.now().toString(),
-      message: args.message,
-      level: args.level || 'INFO',
-      service: args.service || 'default',
-      timestamp: new Date().toISOString(),
-    };
-    logs.push(log);
-
+    const log = await prisma.log.create({
+      data: {
+        message: args.message,
+        level: args.level || 'INFO',
+        service: args.service || 'default',
+        timestamp: new Date().toISOString(),
+      },
+    });
     return log;
   },
 };
