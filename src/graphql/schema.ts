@@ -1,5 +1,5 @@
 import { GraphQLSchema, GraphQLObjectType, GraphQLString } from 'graphql';
-import { addLog, register, login } from './mutations.ts';
+import { addLogToQueue, addLog, register, login } from './mutations.ts';
 import { logsQuery } from "./queries.ts";
 
 const Query = new GraphQLObjectType({
@@ -19,6 +19,7 @@ const Mutation = new GraphQLObjectType({
     register,
     login,
     addLog,
+    addLogToQueue,
   },
 });
 
