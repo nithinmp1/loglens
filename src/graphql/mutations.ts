@@ -75,3 +75,34 @@ export const addLog = {
     return log;
   },
 };
+
+export const addLogToQueue = {
+  type: LogType,
+  args: {
+    message: { type: new GraphQLNonNull(GraphQLString) },
+    level: { type: GraphQLString },
+    service: { type: GraphQLString },
+  },
+  async resolve(_: any, args: any, context: any) {
+    if (!context.user) throw new Error("Unauthorized");
+
+    const { channel } = context;
+    if (!channel) throw new Error("RabbitMQ channel not available in context");
+
+    const queue = "logs";
+    await channel.assertQueue(queue, { durable: true });
+
+    const payload = {
+      id: Date.now(),
+      message: args.message,
+      level: args.level || "INFO",
+      service: args.service || "default",
+      timestamp: new Date().toISOString(),
+    };
+
+    await channel.sendToQueue(queue, Buffer.from(JSON.stringify(payload)));
+    console.log("📩 Sent message to queue:", payload);
+
+    return payload;
+  },
+};
