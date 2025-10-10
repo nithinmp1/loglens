@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node --loader ts-node/esm src/index.ts",
+    "consume": "node --loader ts-node/esm src/consumer/logConsumer.ts",
     "build": "tsc",
     "serve": "node dist/index.js",
     "test": "jest"

@@ -3,6 +3,7 @@ version: "3.8"
 services:
   db:
     image: postgres:15
+    container_name: loglens-postgres
     restart: always
     environment:
       POSTGRES_USER: loglens
@@ -15,6 +16,7 @@ services:
   
   rabbitmq:
     image: rabbitmq:3-management
+    container_name: loglens-rabbitmq
     restart: always
     environment:
       RABBITMQ_DEFAULT_USER: loglens
