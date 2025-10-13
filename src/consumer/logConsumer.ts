@@ -1,9 +1,15 @@
 import amqp from "amqplib";
 import { PrismaClient } from "@prisma/client";
+import { publishLog, setupWebSocketServer, newLogSubscription } from "../graphql/subscriptions.ts";
+import { GraphQLSchema, GraphQLObjectType, GraphQLString } from "graphql";
+import { schema } from "../graphql/schema.ts";
 
 const prisma = new PrismaClient();
 const RABBITMQ_URL = process.env.RABBITMQ_URL || "amqp://localhost";
 const QUEUE_NAME = "logs";
+
+// --- Start WebSocket server ---
+setupWebSocketServer(schema, 4001);
 
 async function startConsumer() {
   try {
@@ -21,9 +27,8 @@ async function startConsumer() {
         if (!msg) return;
         try {
           const logData = JSON.parse(msg.content.toString());
-          console.log("📥 Received log:", logData);
 
-          await prisma.log.create({
+          const savedLog = await prisma.log.create({
             data: {
               service: logData.service || "default",
               level: logData.level || "INFO",
@@ -31,6 +36,8 @@ async function startConsumer() {
               timestamp: new Date(logData.timestamp || Date.now()),
             },
           });
+          
+          publishLog(savedLog);
 
           channel.ack(msg);
           console.log("✅ Log saved to DB");

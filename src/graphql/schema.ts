@@ -1,6 +1,7 @@
 import { GraphQLSchema, GraphQLObjectType, GraphQLString } from 'graphql';
 import { addLogToQueue, addLog, register, login } from './mutations.ts';
 import { logsQuery } from "./queries.ts";
+import { newLogSubscription } from "./subscriptions.ts";
 
 const Query = new GraphQLObjectType({
   name: "Query",
@@ -23,7 +24,15 @@ const Mutation = new GraphQLObjectType({
   },
 });
 
+const Subscription = new GraphQLObjectType({
+  name: "Subscription",
+  fields: {
+    newLog: newLogSubscription,
+  },
+});
+
 export const schema = new GraphQLSchema({
     query: Query,
     mutation: Mutation,
+    subscription: Subscription,
 });
