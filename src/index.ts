@@ -1,7 +1,7 @@
 import { ApolloServer, gql } from "apollo-server";
 import jwt from "jsonwebtoken";
 import { schema } from "./graphql/schema.ts";
-import { connectRabbitMQ, getChannel } from "./rabbitmq.js";
+import { connectRabbitMQ } from "./rabbitmq.js";
 
 const SECRET_KEY = "supersecretkey123";
 

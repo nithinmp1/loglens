@@ -29,17 +29,14 @@ export const logsQuery = {
     
     const filters: any = {};
 
-    // Apply service filter
     if (args.service) {
       filters.service = args.service;
     }
 
-    // Apply level filter
     if (args.level) {
       filters.level = args.level;
     }
 
-    // Apply timestamp range filter
     if (args.from && args.to) {
       filters.timestamp = {
         gte: new Date(args.from),
@@ -51,7 +48,6 @@ export const logsQuery = {
       filters.timestamp = { lte: new Date(args.to) };
     }
 
-    // Query database using Prisma
     const logs = await prisma.log.findMany({
       where: filters,
       orderBy: { timestamp: "desc" },
